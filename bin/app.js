@@ -1,22 +1,28 @@
 #! /usr/bin/env node
 'use strict';
-//const Pokemon = require('./Pokemon-GO-node-api/poke.io.js');
+
 const Pokemon = require('pokemon-go-node-api');
 const _ = require('lodash');
 const Long = require('long');
 const fs = require('fs');
 const argv = require('minimist')(process.argv.slice(2));
+const process = require('process');
 
 
 const pgo = new Pokemon.Pokeio();
 
+if (argv.h || argv.help) {
+  console.log('Usage: ');
+  console.log('pokemon-go-iv -u <username> -p <password> -a ptc|google [-s time|iv] [--cache]');
+  process.exit();
+}
 
 const username = argv.u || process.env.PGO_USERNAME;
 const password = argv.p || process.env.PGO_PASSWORD;
 
 if (!username || !password) {
   console.error('Username and password required (-u and -p)');
-  return;
+  process.exit(1);
 }
 
 const provider = argv.a || process.env.PGO_PROVIDER || 'ptc';
