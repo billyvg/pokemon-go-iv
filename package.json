@@ -1,5 +1,5 @@
 {
-  "name": "ivapp",
+  "name": "pokemon-go-iv",
   "version": "1.0.0",
   "description": "Returns a list of your pokemon's IV in JSON (Pokemon Go)",
   "main": "bin/app.js",
