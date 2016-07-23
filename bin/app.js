@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 'use strict';
 //const Pokemon = require('./Pokemon-GO-node-api/poke.io.js');
 const Pokemon = require('pokemon-go-node-api');
