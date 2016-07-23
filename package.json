@@ -2,7 +2,10 @@
   "name": "ivapp",
   "version": "1.0.0",
   "description": "Returns a list of your pokemon's IV in JSON (Pokemon Go)",
-  "main": "app.js",
+  "main": "bin/app.js",
+  "bin": {
+    "pokemon-go-iv": "bin/app.js"
+  },
   "dependencies": {
     "lodash": "^4.13.1",
     "long": "^3.2.0",
@@ -13,6 +16,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Billy Vong <billy at mmo.me>",
   "license": "MIT"
 }
