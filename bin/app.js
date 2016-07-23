@@ -10,18 +10,23 @@ const argv = require('minimist')(process.argv.slice(2));
 
 const pgo = new Pokemon.Pokeio();
 
+
+const username = argv.u || process.env.PGO_USERNAME;
+const password = argv.p || process.env.PGO_PASSWORD;
+
+if (!username || !password) {
+  console.error('Username and password required (-u and -p)');
+  return;
+}
+
+const provider = argv.a || process.env.PGO_PROVIDER || 'ptc';
+const sort = argv.s || 'time';
+const useCache = argv.cache || false;
+
 const location = {
   type: 'name',
   name: 'San Francisco, CA',
 };
-
-console.log(argv);
-
-const username = argv.u || process.env.PGO_USERNAME;
-const password = argv.p || process.env.PGO_PASSWORD;
-const provider = argv.a || process.env.PGO_PROVIDER || 'ptc';
-const sort = argv.s || 'time';
-const useCache = argv.cache || false;
 
 function parseInventory(items) {
   const FIELDS = [
