@@ -25,8 +25,18 @@ class Pokemon {
     return this._location;
   }
 
-  connect(cb) {
-    pgo.init(this.auth.username, this.auth.password, this.location, this.auth.provider, cb);
+  connect() {
+    return new Promise((resolve, reject) => {
+      pgo.init(this.auth.username, this.auth.password, this.location, this.auth.provider, (err) => {
+        if (err) {
+          throw err;
+          reject(err);
+        } else {
+          this.connected = true;
+          resolve();
+        }
+      })
+    });
   }
 
   static getIv(items, sort) {
@@ -52,18 +62,16 @@ class Pokemon {
 
   getInventory() {
     return new Promise((resolve, reject) => {
-      this.connect(() =>
-        pgo.GetInventory((err, resp) => {
-          if (err) {
-            reject(err);
-          } else {
-            if (resp && resp.inventory_delta && resp.inventory_delta.inventory_items) {
-              const items = resp.inventory_delta.inventory_items;
-              resolve(items);
-            }
+      pgo.GetInventory((err, resp) => {
+        if (err) {
+          reject(err);
+        } else {
+          if (resp && resp.inventory_delta && resp.inventory_delta.inventory_items) {
+            const items = resp.inventory_delta.inventory_items;
+            resolve(items);
           }
-        })
-      );
+        }
+      });
     });
 
   }

@@ -44,7 +44,8 @@ const getItems = () => new Promise((resolve, reject) => {
     }, location);
 
     return pokemon
-      .getInventory()
+      .connect()
+      .then(pokemon.getInventory)
       .then((items) => resolve(items))
       .catch((err) => {
         console.error(err);
