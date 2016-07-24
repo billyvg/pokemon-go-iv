@@ -5,8 +5,8 @@ const Pokemon = require('pokemon-go-node-api');
 const _ = require('lodash');
 const Long = require('long');
 const fs = require('fs');
-const argv = require('minimist')(process.argv.slice(2));
 const process = require('process');
+const argv = require('minimist')(process.argv.slice(2));
 
 
 const pgo = new Pokemon.Pokeio();
