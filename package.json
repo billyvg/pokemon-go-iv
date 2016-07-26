@@ -10,7 +10,7 @@
     "lodash": "^4.13.1",
     "long": "^3.2.0",
     "minimist": "^1.2.0",
-    "pokemon-go-node-api": "file:pokemon-go-node-api"
+    "pokemon-go-node-api": "^1.4.0"
   },
   "devDependencies": {},
   "scripts": {
