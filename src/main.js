@@ -1,10 +1,12 @@
-'use strict';
-const PogoBuf = require('pogobuf');
-const _ = require('lodash');
+import _ from 'lodash';
+import POKEMON_META from './pokemons';
+import { calculateCP } from './calculations';
 
-const PTCLogin = PogoBuf.PTCLogin;
-const GoogleLogin = PogoBuf.GoogleLogin;
-const Client = PogoBuf.Client;
+import {
+  PTCLogin,
+  GoogleLogin,
+  Client,
+} from 'pogobuf';
 
 class Pokemon {
   constructor(auth) {
@@ -17,46 +19,29 @@ class Pokemon {
     const authLib = this.auth.provider === 'google' ? new GoogleLogin() : new PTCLogin();
 
     return authLib.login(this.auth.username, this.auth.password).then((token) => {
-console.log('...', token);
       this.client.setAuthInfo(this.auth.provider, token);
       this.authed = token;
       return this.client.init();
+    }).catch((err) => {
+      console.error('Could not login', err);
     });
-  }
-
-  static getIv(items, sort) {
-    const FIELDS = [
-      'pokemon_id',
-      'cp',
-      'stamina',
-      'height_kg',
-      'individual_attack',
-      'individual_defense',
-      'individual_stamina',
-      'creation_time_ms',
-    ];
-
-    const sortedItems = _.chain(items).map((item) => {
-      if (item && item.inventory_item_data && item.inventory_item_data.pokemon) {
-        return _.pick(item.inventory_item_data.pokemon, FIELDS);
-      }
-    }).compact().sortBy(sort);
-
-    return sortedItems;
   }
 
   getInventory() {
     return this.login().then(() => {
       return this.client.getInventory();
     }).then((inventory) => {
-console.log(inventory);
       if (inventory.inventory_delta && inventory.inventory_delta.inventory_items) {
         const filtered = inventory.inventory_delta.inventory_items.filter((item) => {
           return item.inventory_item_data.pokemon_data && item.inventory_item_data.pokemon_data.pokemon_id;
         }).map((item) => {
           const pokemon = item.inventory_item_data.pokemon_data;
-//const meta = POKEMON_META[pokemon.pokemon_id - 1];
-//return _.extend({}, pokemon, calculateCP(pokemon));
+          const meta = POKEMON_META[pokemon.pokemon_id - 1];
+          return {
+            ...pokemon,
+            ...calculateCP(pokemon),
+            ...meta,
+          };
         });
 
         return filtered;
@@ -65,4 +50,4 @@ console.log(inventory);
   }
 }
 
-module.exports = Pokemon;
+export default Pokemon;

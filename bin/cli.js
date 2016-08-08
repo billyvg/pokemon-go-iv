@@ -1,15 +1,20 @@
 #! /usr/bin/env node
 'use strict';
+require('babel-register');
+
+const _ = require('lodash');
 const fs = require('fs');
 const process = require('process');
 
 const argv = require('minimist')(process.argv.slice(2));
-const Pokemon = require('../app.js');
-const Sort = require('../sort.js');
+const Pokemon = require('../src/main').default;
+const Sort = require('../src/sort').default;
+
+const sortKeys = Object.keys(Sort).map(sort => sort);
 
 if (argv.h || argv.help) {
   console.log('Usage: ');
-  console.log('pokemon-go-iv -u <username> -p <password> -a ptc|google [-s time|iv] [--cache]');
+  console.log(`pokemon-go-iv -u <username> -p <password> -a ptc|google [-s ${sortKeys.join('|')}] [--cache]`);
   process.exit();
 }
 
@@ -22,7 +27,7 @@ if (!username || !password) {
 }
 
 const provider = argv.a || process.env.PGO_PROVIDER || 'ptc';
-const sort = argv.s || 'time';
+const sort = argv.s || 'recent';
 const useCache = argv.cache || false;
 
 const FILE = './response.json';
@@ -42,16 +47,33 @@ const getItems = () => {
 };
 
 getItems().then((items) => {
+  const FIELDS = [
+    'name',
+    'pokemon_id',
+    'cp',
+    'stamina',
+    'maxCP',
+    'height_kg',
+    'individual_attack',
+    'individual_defense',
+    'individual_stamina',
+  ];
+
   let sorter;
-  if (sort === 'time') {
-    sorter = Sort.CreationTime;
+  if (Sort[sort]) {
+    sorter = Sort[sort];
   } else {
-    sorter = Sort.Iv;
+    sorter = Sort.recent;
   }
 
-  const sortedIvs = Pokemon.getIv(items, sorter);
+  const sortedItems = Sort[sort](items);
 
-  console.log(JSON.stringify(sortedIvs, null, 2));
+  console.log(
+    JSON.stringify(
+      sortedItems.map((item) => _.pick(item, FIELDS)), null, 2
+    )
+  );
+
   process.exit();
 }).catch((err) => {
   console.error(err);
