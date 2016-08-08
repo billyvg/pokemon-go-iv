@@ -17,10 +17,8 @@ export default {
         let i = 0;
         let sum = 0;
         _.forEach(['individual_attack', 'individual_defense', 'individual_stamina'], (key) => {
-          if (typeof v[key] !== 'undefined') {
-            sum += v[key];
-            i++;
-          }
+          sum += v[key] || 0;
+          i++;
         });
 
         return sum / i;
@@ -33,5 +31,20 @@ export default {
       _.sortBy(items, (v) => -v.cp),
       (v) => v.pokemon_id
     );
+  },
+
+  name(items) {
+    return _.sortBy(
+      _.sortBy(items, (v) => -v.cp),
+      (v) => v.name
+    );
+  },
+
+  cp(items) {
+    return _.sortBy(items, (v) => -v.cp);
+  },
+
+  maxCP(items) {
+    return _.sortBy(items, (v) => -v.maxCP);
   },
 };
