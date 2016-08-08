@@ -7,4 +7,4 @@ See [pokemon-journal](https://github.com/billyvg/pokemon-journal) for a GUI vers
 `npm install -g pokemon-go-iv`
 
 ## Usage
-`node pokemon-go-iv -u <username> -p <password> -a <"ptc"|"google"> -l "<location>" [-s time|iv] [--cache]`
+`pokemon-go-iv -u <username> -p <password> -a <"ptc"|"google"> [-s recent|iv|id] [--cache]`

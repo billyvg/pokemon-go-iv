@@ -25,35 +25,21 @@ const provider = argv.a || process.env.PGO_PROVIDER || 'ptc';
 const sort = argv.s || 'time';
 const useCache = argv.cache || false;
 
-const location = argv.l;
-
-if (!location) {
-  console.error('Location require (-l "<Location>")');
-  process.exit(1);
-}
-
-
 const FILE = './response.json';
 
-const getItems = () => new Promise((resolve, reject) => {
+const getItems = () => {
   if (useCache && fs.existsSync(FILE)) {
+    return new Promise((resolve, reject) => {
       resolve(JSON.parse(fs.readFileSync(FILE)));
+    });
   } else {
     const pokemon = new Pokemon({
       username, password, provider,
-    }, location);
+    });
 
-    return pokemon
-      .connect()
-      .then(pokemon.getInventory)
-      .then((items) => resolve(items))
-      .catch((err) => {
-        console.error(err);
-        reject(err);
-      });
+    return pokemon.getInventory();
   }
-});
-
+};
 
 getItems().then((items) => {
   let sorter;

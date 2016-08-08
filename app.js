@@ -1,41 +1,26 @@
 'use strict';
-
-const PgoApi = require('pokemon-go-node-api');
+const PogoBuf = require('pogobuf');
 const _ = require('lodash');
 
-const pgo = new PgoApi.Pokeio();
+const PTCLogin = PogoBuf.PTCLogin;
+const GoogleLogin = PogoBuf.GoogleLogin;
+const Client = PogoBuf.Client;
 
 class Pokemon {
-  constructor(auth, location) {
+  constructor(auth) {
     this.auth = auth;
-    this.location = location;
     this.connected = false;
+    this.client = new Client();
   }
 
-  set location(location) {
-    if (typeof location === 'string') {
-      this._location = {
-        type: 'name',
-        name: location,
-      };
-    }
-  }
+  login() {
+    const authLib = this.auth.provider === 'google' ? new GoogleLogin() : new PTCLogin();
 
-  get location() {
-    return this._location;
-  }
-
-  connect() {
-    return new Promise((resolve, reject) => {
-      pgo.init(this.auth.username, this.auth.password, this.location, this.auth.provider, (err) => {
-        if (err) {
-          throw err;
-          reject(err);
-        } else {
-          this.connected = true;
-          resolve();
-        }
-      })
+    return authLib.login(this.auth.username, this.auth.password).then((token) => {
+console.log('...', token);
+      this.client.setAuthInfo(this.auth.provider, token);
+      this.authed = token;
+      return this.client.init();
     });
   }
 
@@ -61,19 +46,22 @@ class Pokemon {
   }
 
   getInventory() {
-    return new Promise((resolve, reject) => {
-      pgo.GetInventory((err, resp) => {
-        if (err) {
-          reject(err);
-        } else {
-          if (resp && resp.inventory_delta && resp.inventory_delta.inventory_items) {
-            const items = resp.inventory_delta.inventory_items;
-            resolve(items);
-          }
-        }
-      });
-    });
+    return this.login().then(() => {
+      return this.client.getInventory();
+    }).then((inventory) => {
+console.log(inventory);
+      if (inventory.inventory_delta && inventory.inventory_delta.inventory_items) {
+        const filtered = inventory.inventory_delta.inventory_items.filter((item) => {
+          return item.inventory_item_data.pokemon_data && item.inventory_item_data.pokemon_data.pokemon_id;
+        }).map((item) => {
+          const pokemon = item.inventory_item_data.pokemon_data;
+//const meta = POKEMON_META[pokemon.pokemon_id - 1];
+//return _.extend({}, pokemon, calculateCP(pokemon));
+        });
 
+        return filtered;
+      }
+    });
   }
 }
 
