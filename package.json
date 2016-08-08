@@ -1,6 +1,6 @@
 {
   "name": "pokemon-go-iv",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Returns a list of your pokemon's IV in JSON (Pokemon Go)",
   "main": "main.js",
   "bin": {
@@ -15,8 +15,7 @@
     "minimist": "^1.2.0",
     "pogobuf": "^1.5.0"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
