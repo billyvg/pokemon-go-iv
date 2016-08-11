@@ -1,6 +1,6 @@
 {
   "name": "pokemon-go-iv",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Returns a list of your pokemon's IV in JSON (Pokemon Go)",
   "main": "main.js",
   "bin": {
