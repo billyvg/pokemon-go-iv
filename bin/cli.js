@@ -1,6 +1,9 @@
 #! /usr/bin/env node
 'use strict';
-require('babel-register');
+require('babel-register')({
+  ignore: false,
+  only: /pokemon-go-iv\/src/
+});
 
 const _ = require('lodash');
 const fs = require('fs');
