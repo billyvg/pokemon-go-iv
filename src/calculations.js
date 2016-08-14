@@ -1,4 +1,5 @@
 import baseStats from '../baseStats';
+import multiplierLevel from '../multiplierLevel';
 
 export function convertIV(id, stam, atk, def, multiplier) {
   const {
@@ -19,9 +20,13 @@ export function calculateCP(mon) {
     individual_defense,
     individual_stamina,
     cp_multiplier,
-    addition_cp_multiplier,
+    additional_cp_multiplier,
   } = mon;
-  const multiplier = cp_multiplier + (addition_cp_multiplier || 0);
+  const multiplier = cp_multiplier + (additional_cp_multiplier || 0);
+
+  const {
+    level
+  } = multiplierLevel.find((m) => Math.round(m.multiplier * 1000)/1000 === Math.round(multiplier * 1000)/1000);
 
   return {
     minCP: convertIV(pokemon_id, 0, 0, 0, multiplier),
@@ -29,5 +34,6 @@ export function calculateCP(mon) {
 			pokemon_id, individual_stamina, individual_attack, individual_defense, multiplier
 		),
     maxCP: convertIV(pokemon_id, 15, 15, 15, multiplier),
+    level: level
   };
 }

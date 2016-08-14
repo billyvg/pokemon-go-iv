@@ -58,6 +58,7 @@ getItems().then((items) => {
     'maxCP',
     'height_m',
     'weight_kg',
+    'level',
     'individual_attack',
     'individual_defense',
     'individual_stamina',
